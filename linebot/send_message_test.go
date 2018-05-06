@@ -15,14 +15,13 @@
 package linebot
 
 import (
+	"context"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
-
-	"golang.org/x/net/context"
 )
 
 func TestPushMessages(t *testing.T) {
@@ -107,8 +106,8 @@ func TestPushMessages(t *testing.T) {
 						"https://example.com/bot/images/image.jpg",
 						"Menu",
 						"Please select",
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", ""),
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "", "displayText"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text", ""),
 						NewURITemplateAction("View detail", "http://example.com/page/123"),
 					),
 				),
@@ -116,7 +115,7 @@ func TestPushMessages(t *testing.T) {
 			ResponseCode: 200,
 			Response:     []byte(`{}`),
 			Want: want{
-				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","thumbnailImageUrl":"https://example.com/bot/images/image.jpg","title":"Menu","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
+				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","thumbnailImageUrl":"https://example.com/bot/images/image.jpg","title":"Menu","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","displayText":"displayText"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
 				Response:    &BasicResponse{},
 			},
 		},
@@ -151,8 +150,8 @@ func TestPushMessages(t *testing.T) {
 						"",
 						"Menu",
 						"Please select",
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", ""),
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "", "displayText"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text", ""),
 						NewURITemplateAction("View detail", "http://example.com/page/123"),
 					),
 				),
@@ -160,7 +159,7 @@ func TestPushMessages(t *testing.T) {
 			ResponseCode: 200,
 			Response:     []byte(`{}`),
 			Want: want{
-				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","title":"Menu","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
+				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","title":"Menu","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","displayText":"displayText"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
 				Response:    &BasicResponse{},
 			},
 		},
@@ -173,8 +172,8 @@ func TestPushMessages(t *testing.T) {
 						"https://example.com/bot/images/image.jpg",
 						"",
 						"Please select",
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", ""),
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "", "displayText"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text", ""),
 						NewURITemplateAction("View detail", "http://example.com/page/123"),
 					),
 				),
@@ -182,7 +181,7 @@ func TestPushMessages(t *testing.T) {
 			ResponseCode: 200,
 			Response:     []byte(`{}`),
 			Want: want{
-				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","thumbnailImageUrl":"https://example.com/bot/images/image.jpg","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
+				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","thumbnailImageUrl":"https://example.com/bot/images/image.jpg","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","displayText":"displayText"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
 				Response:    &BasicResponse{},
 			},
 		},
@@ -195,8 +194,8 @@ func TestPushMessages(t *testing.T) {
 						"https://example.com/bot/images/image.jpg",
 						"",
 						"Please select",
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", ""),
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "", "displayText"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text", ""),
 						NewURITemplateAction("View detail", "http://example.com/page/123"),
 					).WithImageOptions("rectangle", "cover", "#FFFFFF"),
 				),
@@ -204,7 +203,7 @@ func TestPushMessages(t *testing.T) {
 			ResponseCode: 200,
 			Response:     []byte(`{}`),
 			Want: want{
-				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","thumbnailImageUrl":"https://example.com/bot/images/image.jpg","imageAspectRatio":"rectangle","imageSize":"cover","imageBackgroundColor":"#FFFFFF","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
+				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","thumbnailImageUrl":"https://example.com/bot/images/image.jpg","imageAspectRatio":"rectangle","imageSize":"cover","imageBackgroundColor":"#FFFFFF","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","displayText":"displayText"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
 				Response:    &BasicResponse{},
 			},
 		},
@@ -217,8 +216,8 @@ func TestPushMessages(t *testing.T) {
 						"",
 						"",
 						"Please select",
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", ""),
-						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "", "displayText"),
+						NewPostbackTemplateAction("Buy", "action=buy&itemid=123", "text", ""),
 						NewURITemplateAction("View detail", "http://example.com/page/123"),
 					),
 				),
@@ -226,7 +225,7 @@ func TestPushMessages(t *testing.T) {
 			ResponseCode: 200,
 			Response:     []byte(`{}`),
 			Want: want{
-				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
+				RequestBody: []byte(`{"to":"U0cc15697597f61dd8b01cea8b027050e","messages":[{"type":"template","altText":"this is a buttons template","template":{"type":"buttons","text":"Please select","actions":[{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","displayText":"displayText"},{"type":"postback","label":"Buy","data":"action=buy\u0026itemid=123","text":"text"},{"type":"uri","label":"View detail","uri":"http://example.com/page/123"}]}}]}` + "\n"),
 				Response:    &BasicResponse{},
 			},
 		},
@@ -259,8 +258,8 @@ func TestPushMessages(t *testing.T) {
 							"https://example.com/bot/images/item1.jpg",
 							"this is menu",
 							"description",
-							NewPostbackTemplateAction("Buy", "action=buy&itemid=111", ""),
-							NewPostbackTemplateAction("Add to cart", "action=add&itemid=111", ""),
+							NewPostbackTemplateAction("Buy", "action=buy&itemid=111", "", ""),
+							NewPostbackTemplateAction("Add to cart", "action=add&itemid=111", "", ""),
 							NewURITemplateAction("View detail", "http://example.com/page/111"),
 						),
 					),
@@ -283,8 +282,8 @@ func TestPushMessages(t *testing.T) {
 							"https://example.com/bot/images/item1.jpg",
 							"this is menu",
 							"description",
-							NewPostbackTemplateAction("Buy", "action=buy&itemid=111", ""),
-							NewPostbackTemplateAction("Add to cart", "action=add&itemid=111", ""),
+							NewPostbackTemplateAction("Buy", "action=buy&itemid=111", "", ""),
+							NewPostbackTemplateAction("Add to cart", "action=add&itemid=111", "", ""),
 							NewURITemplateAction("View detail", "http://example.com/page/111"),
 						).WithImageOptions("#FFFFFF"),
 					).WithImageOptions("rectangle", "cover"),

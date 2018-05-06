@@ -61,7 +61,7 @@ const (
 // Template interface
 type Template interface {
 	json.Marshaler
-	template()
+	Template()
 }
 
 // ButtonsTemplate type
@@ -192,10 +192,10 @@ func (t *ImageCarouselTemplate) MarshalJSON() ([]byte, error) {
 }
 
 // implements Template interface
-func (*ConfirmTemplate) template()       {}
-func (*ButtonsTemplate) template()       {}
-func (*CarouselTemplate) template()      {}
-func (*ImageCarouselTemplate) template() {}
+func (*ConfirmTemplate) Template()       {}
+func (*ButtonsTemplate) Template()       {}
+func (*CarouselTemplate) Template()      {}
+func (*ImageCarouselTemplate) Template() {}
 
 // NewConfirmTemplate function
 func NewConfirmTemplate(text string, left, right TemplateAction) *ConfirmTemplate {
@@ -252,7 +252,7 @@ func NewImageCarouselColumn(imageURL string, action TemplateAction) *ImageCarous
 // TemplateAction interface
 type TemplateAction interface {
 	json.Marshaler
-	templateAction()
+	TemplateAction()
 }
 
 // URITemplateAction type
@@ -295,23 +295,26 @@ func (a *MessageTemplateAction) MarshalJSON() ([]byte, error) {
 
 // PostbackTemplateAction type
 type PostbackTemplateAction struct {
-	Label string
-	Data  string
-	Text  string
+	Label       string
+	Data        string
+	Text        string
+	DisplayText string
 }
 
 // MarshalJSON method of PostbackTemplateAction
 func (a *PostbackTemplateAction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Type  TemplateActionType `json:"type"`
-		Label string             `json:"label"`
-		Data  string             `json:"data"`
-		Text  string             `json:"text,omitempty"`
+		Type        TemplateActionType `json:"type"`
+		Label       string             `json:"label"`
+		Data        string             `json:"data"`
+		Text        string             `json:"text,omitempty"`
+		DisplayText string             `json:"displayText,omitempty"`
 	}{
-		Type:  TemplateActionTypePostback,
-		Label: a.Label,
-		Data:  a.Data,
-		Text:  a.Text,
+		Type:        TemplateActionTypePostback,
+		Label:       a.Label,
+		Data:        a.Data,
+		Text:        a.Text,
+		DisplayText: a.DisplayText,
 	})
 }
 
@@ -347,10 +350,10 @@ func (a *DatetimePickerTemplateAction) MarshalJSON() ([]byte, error) {
 }
 
 // implements TemplateAction interface
-func (*URITemplateAction) templateAction()            {}
-func (*MessageTemplateAction) templateAction()        {}
-func (*PostbackTemplateAction) templateAction()       {}
-func (*DatetimePickerTemplateAction) templateAction() {}
+func (*URITemplateAction) TemplateAction()            {}
+func (*MessageTemplateAction) TemplateAction()        {}
+func (*PostbackTemplateAction) TemplateAction()       {}
+func (*DatetimePickerTemplateAction) TemplateAction() {}
 
 // NewURITemplateAction function
 func NewURITemplateAction(label, uri string) *URITemplateAction {
@@ -369,11 +372,12 @@ func NewMessageTemplateAction(label, text string) *MessageTemplateAction {
 }
 
 // NewPostbackTemplateAction function
-func NewPostbackTemplateAction(label, data, text string) *PostbackTemplateAction {
+func NewPostbackTemplateAction(label, data, text, displayText string) *PostbackTemplateAction {
 	return &PostbackTemplateAction{
-		Label: label,
-		Data:  data,
-		Text:  text,
+		Label:       label,
+		Data:        data,
+		Text:        text,
+		DisplayText: displayText,
 	}
 }
 
