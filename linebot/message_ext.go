@@ -16,7 +16,7 @@ type FileMessage struct {
 	FileSize int
 }
 
-func (*FileMessage) message() {}
+func (*FileMessage) Message() {}
 
 // MarshalJSON method of FileMessage
 func (m *FileMessage) MarshalJSON() ([]byte, error) {
