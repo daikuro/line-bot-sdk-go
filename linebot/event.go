@@ -116,8 +116,6 @@ type rawEventMessage struct {
 	Longitude float64     `json:"longitude,omitempty"`
 	PackageID string      `json:"packageId,omitempty"`
 	StickerID string      `json:"stickerId,omitempty"`
-	FileName  string      `json:"fileName,omitempty"`
-	FileSize  int         `json:"fileSize,omitempty"`
 }
 
 type rawBeaconEvent struct {
@@ -250,12 +248,6 @@ func (e *Event) UnmarshalJSON(body []byte) (err error) {
 				ID:        rawEvent.Message.ID,
 				PackageID: rawEvent.Message.PackageID,
 				StickerID: rawEvent.Message.StickerID,
-			}
-		case MessageTypeFile:
-			e.Message = &FileMessage{
-				ID:       rawEvent.Message.ID,
-				FileName: rawEvent.Message.FileName,
-				FileSize: rawEvent.Message.FileSize,
 			}
 		}
 	case EventTypePostback:
